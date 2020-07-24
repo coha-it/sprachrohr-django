@@ -11,6 +11,12 @@ class Author(models.Model):
         return "%s" % (self.display_name)
 
 
+class Tag(models.Model):
+    name         = models.CharField(max_length=200, default='')
+
+    def __str__(self):
+        return self.name
+
 class Post(models.Model):
     active      = models.BooleanField(default=False)
     url         = models.CharField(max_length=255, unique=True)
@@ -24,7 +30,8 @@ class Post(models.Model):
         ('S', 'Text-Blogpost'),
     ))
 
-    author      = models.ForeignKey(Author, on_delete=models.CASCADE)
+    authors      = models.ManyToManyField('Author')
+    tags         = models.ManyToManyField('Tag')
 
     def __str__(self):
         return self.title
@@ -40,4 +47,4 @@ class Source(models.Model):
     type    = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return "(On %s): %s" % (self.post.title, self.src)
+        return "(%s): %s" % (self.post.title, self.src)
